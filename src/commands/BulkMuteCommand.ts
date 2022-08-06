@@ -1,6 +1,9 @@
 import { Interaction, InteractionResponseType } from "harmony";
 import Command from "../structures/Command.ts";
 
+/**
+ * 実行者が参加しているボイスチャンネルのメンバー全員をミュートするコマンド
+ */
 export default class BulkMuteCommand extends Command {
   constructor() {
     super({

@@ -2,6 +2,9 @@ import { Embed, Interaction, InteractionResponseType } from "harmony";
 import { BOT_NAME, VERSION } from "../constants.ts";
 import Command from "../structures/Command.ts";
 
+/**
+ * BulkMute についてを表示するコマンド
+ */
 export default class AboutCommand extends Command {
   constructor() {
     super({
