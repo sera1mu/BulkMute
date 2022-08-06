@@ -25,7 +25,7 @@ async function boot(): Promise<{ client: BulkMuteClient; logger: log.Logger }> {
 
   if (typeof BM_TOKEN === "undefined") {
     throw new Error(
-      'Specify the client\'s token to environment variable "BC_TOKEN"',
+      'Specify the client\'s token to environment variable "BM_TOKEN"',
     );
   }
 
