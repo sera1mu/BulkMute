@@ -22,8 +22,8 @@ hosting.
 1. Clone repository
 
 ```
-git clone https://github.com/sera1mu/bodocord.git
-cd bodocord
+git clone https://github.com/sera1mu/BulkMute.git
+cd BulkMute
 git switch main
 ```
 
