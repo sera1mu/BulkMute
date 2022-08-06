@@ -18,33 +18,34 @@ export default class AboutCommand extends Command {
   async run(i: Interaction): Promise<void> {
     const embed = new Embed({
       title: `${BOT_NAME} ${VERSION}`,
-      description: "The simple Discord bot to toggle server mute for all users in a voice channel at once.",
+      description:
+        "The simple Discord bot to toggle server mute for all users in a voice channel at once.",
       fields: [
         {
           name: "Version",
-          value: VERSION
+          value: VERSION,
         },
         {
           name: "Source code",
-          value: "https://github.com/sera1mu/bulkmute"
+          value: "https://github.com/sera1mu/bulkmute",
         },
         {
           name: "License",
-          value: "MIT License"
+          value: "MIT License",
         },
         {
           name: "Author",
-          value: "Seraimu"
-        }
+          value: "Seraimu",
+        },
       ],
       footer: {
-        text: "Copyright © 2022 Seraimu."
-      }
+        text: "Copyright © 2022 Seraimu.",
+      },
     });
 
     await i.respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      embeds: [embed]
+      embeds: [embed],
     });
   }
 }

@@ -5,7 +5,7 @@ import BulkMuteClient from "./structures/BulkMuteClient.ts";
 let isAlreadyStartedShutdown = false;
 
 function shutdown(client: BulkMuteClient, logger: log.Logger): void {
-  if(isAlreadyStartedShutdown) return;
+  if (isAlreadyStartedShutdown) return;
   isAlreadyStartedShutdown = true;
 
   client.destroy()
@@ -17,14 +17,16 @@ function shutdown(client: BulkMuteClient, logger: log.Logger): void {
       logger.error("Failed to destroy client gracefully.", `err=${err}`);
       logger.info("Exit code is 1.");
       Deno.exit(1);
-    })
+    });
 }
 
-async function boot(): Promise<{ client: BulkMuteClient, logger: log.Logger}> {
+async function boot(): Promise<{ client: BulkMuteClient; logger: log.Logger }> {
   const BM_TOKEN = Deno.env.get("BM_TOKEN");
 
-  if(typeof BM_TOKEN === "undefined") {
-    throw new Error("Specify the client's token to environment variable \"BC_TOKEN\"");
+  if (typeof BM_TOKEN === "undefined") {
+    throw new Error(
+      'Specify the client\'s token to environment variable "BC_TOKEN"',
+    );
   }
 
   await log.setup({

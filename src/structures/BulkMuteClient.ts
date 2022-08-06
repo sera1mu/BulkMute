@@ -1,4 +1,11 @@
-import { ApplicationCommand, Client, ClientOptions, event, Interaction, slash } from "harmony";
+import {
+  ApplicationCommand,
+  Client,
+  ClientOptions,
+  event,
+  Interaction,
+  slash,
+} from "harmony";
 import { Logger } from "std/log";
 import AboutCommand from "../commands/AboutCommand.ts";
 import BulkMuteCommand from "../commands/BulkMuteCommand.ts";
@@ -12,7 +19,7 @@ export default class BulkMuteClient extends Client {
 
   private readonly registeringCommands: { [key: string]: Command } = {
     about: new AboutCommand(),
-    bulkmute: new BulkMuteCommand()
+    bulkmute: new BulkMuteCommand(),
   };
 
   constructor(private readonly logger: Logger, options?: ClientOptions) {
@@ -43,14 +50,14 @@ export default class BulkMuteClient extends Client {
         `channelId=${i.channel?.id}`,
         `interactionId=${i.id}`,
       );
-    } catch(err) {
+    } catch (err) {
       this.logger.error(
         `Failed to run command ${command.commandPartial.name}.`,
         `userId=${i.user?.id}`,
         `guildId=${i.guild?.id}`,
         `channelId=${i.channel?.id}`,
         `interactionId=${i.id}`,
-        `err=${err}`
+        `err=${err}`,
       );
     }
   }
@@ -61,12 +68,14 @@ export default class BulkMuteClient extends Client {
 
     try {
       const commands = await this.registerCommands();
-      const commandNames = commands.map((command) => command.name).join(", ")
+      const commandNames = commands.map((command) => command.name).join(", ");
       this.logger.info(`Registered all commands: ${commandNames}`);
-    } catch(err) {
-      this.logger.error(`Failed to register commands: ${err}`)
+    } catch (err) {
+      this.logger.error(`Failed to register commands: ${err}`);
     } finally {
-      this.logger.info(`Ready! Logged in as ${this.user?.tag}(${this.user?.id})`)
+      this.logger.info(
+        `Ready! Logged in as ${this.user?.tag}(${this.user?.id})`,
+      );
     }
   }
 

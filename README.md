@@ -1,6 +1,7 @@
 # BulkMute
 
-The simple Discord bot to toggle server mute for all users in a voice channel at once.
+The simple Discord bot to toggle server mute for all users in a voice channel at
+once.
 
 <details>
 <summary>Show demo</summary>
@@ -12,7 +13,8 @@ The simple Discord bot to toggle server mute for all users in a voice channel at
 ## Usage
 
 - `/about` :: Show about BulkMute bot
-- `/bulkmute` :: Toggle server mute for all users in a voice channel. (You should join some voice channel before.)
+- `/bulkmute` :: Toggle server mute for all users in a voice channel. (You
+  should join some voice channel before.)
 
 ## Selfhosting
 
