@@ -1,4 +1,9 @@
-import { Interaction, InteractionResponseType } from "harmony";
+import {
+  ApplicationCommandOptionType,
+  Interaction,
+  InteractionResponseType,
+  SlashCommandInteraction,
+} from "harmony";
 import Command from "../structures/Command.ts";
 
 /**
@@ -9,12 +14,22 @@ export default class BulkMuteCommand extends Command {
     super({
       name: "bulkmute",
       description: "Mute all members in joining voice channel",
+      options: [
+        {
+          name: "mute",
+          type: ApplicationCommandOptionType.BOOLEAN,
+          description: "Mute or unmute",
+          required: false,
+        },
+      ],
     });
   }
 
   init(): void {}
 
   async run(i: Interaction): Promise<void> {
+    const slashInteraction = i as SlashCommandInteraction;
+
     const voiceState = await i.guild?.voiceStates.get(i.user.id);
 
     if (typeof voiceState === "undefined") {
@@ -39,15 +54,20 @@ export default class BulkMuteCommand extends Command {
       throw new Error("Failed to get voice states in the voice channel.");
     }
 
+    const muteOption = slashInteraction.options[0];
+    const doMute = typeof muteOption === "undefined"
+      ? !voiceState?.mute
+      : muteOption.value;
+
     await Promise.all(keys.map(async (key) => {
       const entryState = await channelVoiceStates?.get(key);
-      entryState?.setMute(!voiceState?.mute);
+      entryState?.setMute(doMute);
     }));
 
     await i.respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       content: `All members in "${voiceChannel?.name}" are ${
-        !voiceState?.mute ? "muted" : "unmuted"
+        doMute ? "muted" : "unmuted"
       }.`,
     });
   }
