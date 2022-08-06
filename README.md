@@ -54,4 +54,4 @@ deno task start
 
 ## License
 
-[MIT (c) 2022 Seraimu](https://github.com/sera1mu/bulkmute/blob/main/LICENSE)
+[MIT &copy; 2022 Seraimu](https://github.com/sera1mu/bulkmute/blob/main/LICENSE)
