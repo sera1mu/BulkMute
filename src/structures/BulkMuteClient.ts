@@ -1,6 +1,7 @@
 import { ApplicationCommand, Client, ClientOptions, event, Interaction, slash } from "harmony";
 import { Logger } from "std/log";
 import AboutCommand from "../commands/AboutCommand.ts";
+import BulkMuteCommand from "../commands/BulkMuteCommand.ts";
 import Command from "./Command.ts";
 
 /**
@@ -10,7 +11,8 @@ export default class BulkMuteClient extends Client {
   registerCommandPromise?: Promise<void>;
 
   private readonly registeringCommands: { [key: string]: Command } = {
-    about: new AboutCommand()
+    about: new AboutCommand(),
+    bulkmute: new BulkMuteCommand()
   };
 
   constructor(private readonly logger: Logger, options?: ClientOptions) {
@@ -71,5 +73,10 @@ export default class BulkMuteClient extends Client {
   @slash()
   async about(i: Interaction): Promise<void> {
     await this.runCommand(this.registeringCommands.about, i);
+  }
+
+  @slash()
+  async bulkmute(i: Interaction): Promise<void> {
+    await this.runCommand(this.registeringCommands.bulkmute, i);
   }
 }
