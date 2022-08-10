@@ -13,13 +13,13 @@ once.
 ## Usage
 
 - `/about` :: Show about BulkMute bot
-- `/bulkmute [mute?: boolean]` :: Toggle server mute for all users in a voice channel. (You
-  should join some voice channel before.)
-  
-  **Example:** 
-    * `/bulkmute` :: Toggle server mute
-    * `/bulkmute True` :: Force mute
-    * `/bulkmute False` :: Force unmute
+- `/bulkmute [mute?: boolean]` :: Toggle server mute for all users in a voice
+  channel. (You should join some voice channel before.)
+
+  **Example:**
+  - `/bulkmute` :: Toggle server mute
+  - `/bulkmute True` :: Force mute
+  - `/bulkmute False` :: Force unmute
 
 ## Selfhosting
 
