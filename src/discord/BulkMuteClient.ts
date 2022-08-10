@@ -9,7 +9,7 @@ import {
 import { Logger } from "std/log";
 import AboutCommand from "../commands/AboutCommand.ts";
 import BulkMuteCommand from "../commands/BulkMuteCommand.ts";
-import Command from "./Command.ts";
+import Command from "../commands/Command.ts";
 
 /**
  * BulkMute の Discord クライアント
@@ -63,20 +63,22 @@ export default class BulkMuteClient extends Client {
   }
 
   @event()
-  async ready(): Promise<void> {
+  ready(): void {
     this.logger.info("Registering commands...");
 
-    try {
-      const commands = await this.registerCommands();
-      const commandNames = commands.map((command) => command.name).join(", ");
-      this.logger.info(`Registered all commands: ${commandNames}`);
-    } catch (err) {
-      this.logger.error(`Failed to register commands: ${err}`);
-    } finally {
-      this.logger.info(
-        `Ready! Logged in as ${this.user?.tag}(${this.user?.id})`,
-      );
-    }
+    this.registerCommandPromise = (async () => {
+      try {
+        const commands = await this.registerCommands();
+        const commandNames = commands.map((command) => command.name).join(", ");
+        this.logger.info(`Registered all commands: ${commandNames}`);
+      } catch (err) {
+        this.logger.error(`Failed to register commands: ${err}`);
+      } finally {
+        this.logger.info(
+          `Ready! Logged in as ${this.user?.tag}(${this.user?.id})`,
+        );
+      }
+    })();
   }
 
   @slash()

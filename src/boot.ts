@@ -1,6 +1,6 @@
 import { Intents } from "harmony";
 import * as log from "std/log";
-import BulkMuteClient from "./structures/BulkMuteClient.ts";
+import BulkMuteClient from "./discord/BulkMuteClient.ts";
 
 let isAlreadyStartedShutdown = false;
 
