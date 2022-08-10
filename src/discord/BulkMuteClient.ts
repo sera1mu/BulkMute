@@ -9,7 +9,7 @@ import {
 import { Logger } from "std/log";
 import AboutCommand from "../commands/AboutCommand.ts";
 import BulkMuteCommand from "../commands/BulkMuteCommand.ts";
-import Command from "./Command.ts";
+import Command from "../commands/Command.ts";
 
 /**
  * BulkMute の Discord クライアント

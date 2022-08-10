@@ -1,5 +1,5 @@
 import { ApplicationCommandPartial, Interaction } from "harmony";
-import BulkMuteClient from "./BulkMuteClient.ts";
+import BulkMuteClient from "../discord/BulkMuteClient.ts";
 
 /**
  * Slash Command の基底ウラス

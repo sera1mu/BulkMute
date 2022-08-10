@@ -1,6 +1,6 @@
 import { Embed, Interaction, InteractionResponseType } from "harmony";
 import { BOT_NAME, VERSION } from "../constants.ts";
-import Command from "../structures/Command.ts";
+import Command from "./Command.ts";
 
 /**
  * BulkMute についてを表示するコマンド
