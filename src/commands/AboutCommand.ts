@@ -1,5 +1,6 @@
 import { Embed, Interaction, InteractionResponseType } from "harmony";
 import { BOT_NAME, VERSION } from "../constants.ts";
+import { Language } from "../i18n/Language.ts";
 import Command from "./Command.ts";
 
 /**
@@ -15,26 +16,25 @@ export default class AboutCommand extends Command {
 
   init(): void {}
 
-  async run(i: Interaction): Promise<void> {
+  async run(i: Interaction, lang: Language): Promise<void> {
     const embed = new Embed({
       title: `${BOT_NAME} ${VERSION}`,
-      description:
-        "The simple Discord bot to toggle server mute for all users in a voice channel at once.",
+      description: lang.botDescritpion,
       fields: [
         {
-          name: "Version",
+          name: lang.version,
           value: VERSION,
         },
         {
-          name: "Source code",
+          name: lang.sourceCode,
           value: "https://github.com/sera1mu/bulkmute",
         },
         {
-          name: "License",
+          name: lang.license,
           value: "MIT License",
         },
         {
-          name: "Author",
+          name: lang.author,
           value: "Seraimu",
         },
       ],
