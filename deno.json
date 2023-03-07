@@ -3,5 +3,12 @@
   "importMap": "./import_map.json",
   "tasks": {
     "start": "deno run --allow-net --allow-env ./src/boot.ts"
+  },
+  "fmt": {
+    "files": {
+      "exclude": [
+        "deno.lock"
+      ]
+    }
   }
 }
