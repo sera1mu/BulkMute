@@ -6,10 +6,13 @@ import {
   Interaction,
   slash,
 } from "harmony";
+import { DB } from "sqlite";
 import { Logger } from "std/log";
 import AboutCommand from "../commands/AboutCommand.ts";
 import BulkMuteCommand from "../commands/BulkMuteCommand.ts";
 import Command from "../commands/Command.ts";
+import LangCommand from "../commands/LangCommand.ts";
+import UsersLanguagesStore from "../i18n/UsersLanguagesStore.ts";
 
 /**
  * BulkMute の Discord クライアント
@@ -17,13 +20,22 @@ import Command from "../commands/Command.ts";
 export default class BulkMuteClient extends Client {
   registerCommandPromise?: Promise<void>;
 
+  private readonly store: UsersLanguagesStore;
+
   private readonly registeringCommands: { [key: string]: Command } = {
     about: new AboutCommand(),
     bulkmute: new BulkMuteCommand(),
+    lang: new LangCommand(),
   };
 
-  constructor(private readonly logger: Logger, options?: ClientOptions) {
+  constructor(
+    private readonly logger: Logger,
+    private readonly db: DB,
+    options?: ClientOptions,
+  ) {
     super(options);
+
+    this.store = new UsersLanguagesStore(db);
   }
 
   /**
@@ -40,9 +52,12 @@ export default class BulkMuteClient extends Client {
     return Promise.all(promises);
   }
 
-  private async runCommand(command: Command, i: Interaction): Promise<void> {
+  private async runCommand(
+    command: Command,
+    i: Interaction,
+  ): Promise<void> {
     try {
-      await command.run(i);
+      await command.run(i, this.store.getLang(i.user.id), this.store);
       this.logger.info(
         `Runned command ${command.commandPartial.name}.`,
         `userId=${i.user?.id}`,
@@ -64,6 +79,10 @@ export default class BulkMuteClient extends Client {
 
   @event()
   ready(): void {
+    this.logger.info("Initializing the table of users languages...");
+
+    this.store.initTable();
+
     this.logger.info("Registering commands...");
 
     this.registerCommandPromise = (async () => {
@@ -83,11 +102,25 @@ export default class BulkMuteClient extends Client {
 
   @slash()
   async about(i: Interaction): Promise<void> {
-    await this.runCommand(this.registeringCommands.about, i);
+    await this.runCommand(
+      this.registeringCommands.about,
+      i,
+    );
   }
 
   @slash()
   async bulkmute(i: Interaction): Promise<void> {
-    await this.runCommand(this.registeringCommands.bulkmute, i);
+    await this.runCommand(
+      this.registeringCommands.bulkmute,
+      i,
+    );
+  }
+
+  @slash()
+  async lang(i: Interaction): Promise<void> {
+    await this.runCommand(
+      this.registeringCommands.lang,
+      i,
+    );
   }
 }

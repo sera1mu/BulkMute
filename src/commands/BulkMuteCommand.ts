@@ -4,6 +4,7 @@ import {
   InteractionResponseType,
   SlashCommandInteraction,
 } from "harmony";
+import { Language } from "../i18n/Language.ts";
 import Command from "./Command.ts";
 
 /**
@@ -27,7 +28,7 @@ export default class BulkMuteCommand extends Command {
 
   init(): void {}
 
-  async run(i: Interaction): Promise<void> {
+  async run(i: Interaction, lang: Language): Promise<void> {
     const slashInteraction = i as SlashCommandInteraction;
 
     const voiceState = await i.guild?.voiceStates.get(i.user.id);
@@ -35,7 +36,7 @@ export default class BulkMuteCommand extends Command {
     if (typeof voiceState === "undefined") {
       await i.respond({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        content: "You aren't joining any voice channel now!",
+        content: lang.notJoiningAnyVoiceChannelMsg,
       });
 
       throw new Error("The author isn't joining any voice channel.");
@@ -46,11 +47,7 @@ export default class BulkMuteCommand extends Command {
     const keys = await channelVoiceStates?.keys();
 
     if (typeof keys === "undefined") {
-      await i.respond({
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        content: "Sorry. An internal error occurred. Please try again.",
-      });
-
+      this.respondAsInternalError(i, lang);
       throw new Error("Failed to get voice states in the voice channel.");
     }
 
@@ -64,11 +61,14 @@ export default class BulkMuteCommand extends Command {
       entryState?.setMute(doMute);
     }));
 
+    const channelName = voiceChannel?.name || "???";
+
     await i.respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-      content: `All members in "${voiceChannel?.name}" are ${
-        doMute ? "muted" : "unmuted"
-      }.`,
+      content: lang.bulkMuteResultMsg.replace("%channel%", channelName).replace(
+        "%isMuted%",
+        doMute ? lang.muted : lang.unmuted,
+      ),
     });
   }
 }
