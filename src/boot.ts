@@ -1,30 +1,56 @@
+import { DB } from "sqlite";
 import { Intents } from "harmony";
 import * as log from "std/log";
-import BulkMuteClient from "./structures/BulkMuteClient.ts";
+import BulkMuteClient from "./discord/BulkMuteClient.ts";
 
 let isAlreadyStartedShutdown = false;
 
-function shutdown(client: BulkMuteClient, logger: log.Logger): void {
-  if(isAlreadyStartedShutdown) return;
+function shutdown(client: BulkMuteClient, logger: log.Logger, db: DB): void {
+  if (isAlreadyStartedShutdown) return;
   isAlreadyStartedShutdown = true;
+
+  let isFailedShutdownGracefully = false;
 
   client.destroy()
     .then(() => {
       logger.info("Destroyed client.");
-      logger.info("Exit code is 0.");
     })
     .catch((err) => {
       logger.error("Failed to destroy client gracefully.", `err=${err}`);
-      logger.info("Exit code is 1.");
-      Deno.exit(1);
+      isFailedShutdownGracefully = true;
     })
+    .finally(() => {
+      try {
+        db.close();
+        logger.info("Closed database.");
+      } catch (err) {
+        isFailedShutdownGracefully = true;
+        logger.error("Failed to close database gracefully.", `err=${err}`);
+      } finally {
+        if (isFailedShutdownGracefully) {
+          logger.error("Exit code is 1.");
+          Deno.exit(1);
+        }
+
+        logger.info("Exit code is 0.");
+      }
+    });
 }
 
-async function boot(): Promise<{ client: BulkMuteClient, logger: log.Logger}> {
+async function boot(): Promise<{ client: BulkMuteClient; logger: log.Logger }> {
   const BM_TOKEN = Deno.env.get("BM_TOKEN");
+  const BM_DB = Deno.env.get("BM_DB");
 
-  if(typeof BM_TOKEN === "undefined") {
-    throw new Error("Specify the client's token to environment variable \"BC_TOKEN\"");
+  if (typeof BM_TOKEN === "undefined") {
+    throw new Error(
+      'Specify the client\'s token to environment variable "BM_TOKEN".',
+    );
+  }
+
+  if (typeof BM_DB === "undefined") {
+    throw new Error(
+      'Specify the file name of the database used to environment variable "BM_DB".',
+    );
   }
 
   await log.setup({
@@ -60,11 +86,12 @@ async function boot(): Promise<{ client: BulkMuteClient, logger: log.Logger}> {
   });
 
   const logger = log.getLogger();
-  const client = new BulkMuteClient(log.getLogger("client"));
+  const db = new DB(BM_DB);
+  const client = new BulkMuteClient(log.getLogger("client"), db);
   await client.connect(BM_TOKEN, Intents.None);
 
-  Deno.addSignalListener("SIGTERM", () => shutdown(client, logger));
-  Deno.addSignalListener("SIGINT", () => shutdown(client, logger));
+  Deno.addSignalListener("SIGTERM", () => shutdown(client, logger, db));
+  Deno.addSignalListener("SIGINT", () => shutdown(client, logger, db));
 
   return { client, logger };
 }
